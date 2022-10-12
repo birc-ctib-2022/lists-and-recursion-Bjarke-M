@@ -3,8 +3,10 @@
 from __future__ import annotations
 from ast import Not
 from pickle import FALSE
+from re import A
 from typing import TypeVar, Generic, Optional
 from dataclasses import dataclass
+from unittest import result
 
 T = TypeVar('T')
 
@@ -100,6 +102,8 @@ def drop(x: List[T], k: int) -> List[T]:
         else:
             i=k-1
         return drop(x.tail,i) # this cannot be the most beautiful way, displeasing
+    else:
+        return None
 
 
 
@@ -161,8 +165,12 @@ def rev(x: List[T]) -> List[T]:
     L(3, L(2, L(1, None)))
     """
     #ARRRRRGHHHHH
-    ...
-
+    # u = L()
+    # if x.tail is None:
+    #     return 'idiot'
+    # else:
+    #did i give up... oh yes
+    
 
 # Tail-recursive versions ###########################################
 
@@ -204,7 +212,9 @@ def contains_tr(x: List[T], e: T) -> bool:
     >>> contains_tr(L(1, L(2, L(3, None))), 2)
     True
     """
+    return False if x.tail is None else x.head==e or contains_tr(x.tail,e) # is this tail recursion??! not too sure
     ...
+
 
 
 def drop_tr(x: List[T], k: int) -> List[T]:
@@ -219,7 +229,9 @@ def drop_tr(x: List[T], k: int) -> List[T]:
     >>> drop_tr(x, 3)
     L(4, None)
     """
-    ...
+    return x if k==0 else drop_tr(x.tail,k-1)  # the definition of tail recursion is a little iffy to me
+
+
 
 
 def keep_tr(x: List[T], k: int) -> List[T]:
@@ -233,7 +245,7 @@ def keep_tr(x: List[T], k: int) -> List[T]:
     >>> keep_tr(x, 3)
     L(1, L(2, L(3, None)))
     """
-    ...
+    return None if k==0 else L(x.head,keep_tr(x.tail,k-1)) # pretty much exactly the same..
 
 
 def concat_tr(x: List[T], y: List[T]) -> List[T]:
@@ -243,7 +255,8 @@ def concat_tr(x: List[T], y: List[T]) -> List[T]:
     >>> concat_tr(L(1, L(2, None)), L(3, L(4, None)))
     L(1, L(2, L(3, L(4, None))))
     """
-    ...
+    return L(x.head,y) if x.tail is None else L(x.head,concat_tr(x.tail,y))
+
 
 
 def append_tr(x: List[T], e: T) -> List[T]:
@@ -253,7 +266,7 @@ def append_tr(x: List[T], e: T) -> List[T]:
     >>> append_tr(L(1, L(2, None)), 3)
     L(1, L(2, L(3, None)))
     """
-    ...
+    return L(x.head,L(e,None)) if x.tail is None else L(x.head, append_tr(x.tail,e))
 
 
 def rev_tr(x: List[T]) -> List[T]:
@@ -263,7 +276,7 @@ def rev_tr(x: List[T]) -> List[T]:
     >>> rev_tr(L(1, L(2, L(3, None))))
     L(3, L(2, L(1, None)))
     """
-    ...
+    # ... fuuu
 
 
 # Loop versions ###########################################
@@ -313,6 +326,12 @@ def contains_loop(x: List[T], e: T) -> bool:
     >>> contains_loop(L(1, L(2, L(3, None))), 2)
     True
     """
+    acc=0
+    while x:
+        if x.head==e:
+            acc += 1
+        x = x.tail
+    return acc != 0
     ...
 
 
@@ -328,7 +347,12 @@ def drop_loop(x: List[T], k: int) -> List[T]:
     >>> drop_loop(x, 3)
     L(4, None)
     """
-    ...
+    if k==0:
+        return x
+    while k:
+        x=x.tail
+        k -= 1
+    return x
 
 
 def keep_loop(x: List[T], k: int) -> List[T]:
@@ -342,8 +366,17 @@ def keep_loop(x: List[T], k: int) -> List[T]:
     >>> keep_loop(x, 3)
     L(1, L(2, L(3, None)))
     """
-    ...
+    
+#     if k==0:
+#         return None
+#     while k:
+#         x1, y = x.head, x.tail
+#         u = L(x1,y)
+#         k -= 1
+#     return u
+# x = L(1, L(2, L(3, L(4, None))))
 
+# print(keep_loop(x, 2))
 
 def concat_loop(x: List[T], y: List[T]) -> List[T]:
     """
