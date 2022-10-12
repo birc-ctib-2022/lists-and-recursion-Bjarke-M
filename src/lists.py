@@ -1,6 +1,8 @@
 """Linked lists."""
 
 from __future__ import annotations
+from ast import Not
+from pickle import FALSE
 from typing import TypeVar, Generic, Optional
 from dataclasses import dataclass
 
@@ -71,7 +73,11 @@ def contains(x: List[T], e: T) -> bool:
     >>> contains(L(1, L(2, L(3, None))), 2)
     True
     """
-    ...
+    if x.tail is None:
+        return False
+    return True if e == x.head else contains(x.tail,e)
+#complexity is worst case O(n) and best case O(1)?
+
 
 
 def drop(x: List[T], k: int) -> List[T]:
@@ -85,8 +91,16 @@ def drop(x: List[T], k: int) -> List[T]:
     L(2, L(3, L(4, None)))
     >>> drop(x, 3)
     L(4, None)
+    >>> drop(x,5)
+    None
     """
-    ...
+    if k  <= length(x): 
+        if k==0:
+            return x
+        else:
+            i=k-1
+        return drop(x.tail,i) # this cannot be the most beautiful way, displeasing
+
 
 
 def keep(x: List[T], k: int) -> List[T]:
@@ -101,6 +115,14 @@ def keep(x: List[T], k: int) -> List[T]:
     L(1, L(2, L(3, None)))
     """
     ...
+    i=k
+    if k <= length(x):
+        if k==0:
+            return None
+        else:
+            i -= 1
+            return(L(x.head,keep(x.tail,i)))
+
 
 
 def concat(x: List[T], y: List[T]) -> List[T]:
@@ -110,6 +132,10 @@ def concat(x: List[T], y: List[T]) -> List[T]:
     >>> concat(L(1, L(2, None)), L(3, L(4, None)))
     L(1, L(2, L(3, L(4, None))))
     """
+    if x.tail is None:
+        return L(x.head, y)
+    else:
+        return L(x.head, concat(x.tail,y))
     ...
 
 
@@ -120,6 +146,10 @@ def append(x: List[T], e: T) -> List[T]:
     >>> append(L(1, L(2, None)), 3)
     L(1, L(2, L(3, None)))
     """
+    if x.tail is None:
+        return L(x.head,L(e,None))
+    else:
+        return L(x.head, append(x.tail,e))
     ...
 
 
@@ -130,6 +160,7 @@ def rev(x: List[T]) -> List[T]:
     >>> rev(L(1, L(2, L(3, None))))
     L(3, L(2, L(1, None)))
     """
+    #ARRRRRGHHHHH
     ...
 
 
